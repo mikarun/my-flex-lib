@@ -1,0 +1,6 @@
+@namespace my "containers.*";
+
+my|ActionsTitleBarPanel
+{  
+  skinClass: ClassReference("skins.containers.ActionsTitleBarPanelSkin");
+}

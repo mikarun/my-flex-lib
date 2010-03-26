@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- http://blog.flexexamples.com/2009/10/19/repositioning-the-control-bar-on-a-spark-panel-container-in-flex-4/ -->
-<s:SparkSkin name="ActionsTitleBarPanelSkin"
+<s:SparkSkin
+            name="ActionsTitleBarPanelSkin"
              xmlns:fx="http://ns.adobe.com/mxml/2009"
              xmlns:s="library://ns.adobe.com/flex/spark"
              xmlns:ns="library://ns.adobe.com/flex/mx"
              xmlns:fb="http://ns.adobe.com/flashbuilder/2009"             
              blendMode="normal"
-             mouseEnabled="false" 
-             minWidth="131" minHeight="127"
+             mouseEnabled="false"              
              alpha.disabled="0.5"
              alpha.disabledWithControlBar="0.5">
   <!-- states -->
   <s:states>
     <s:State name="normal" />
-    <s:State name="disabled" />
+    <s:State name="disabled" />    
     <s:State name="normalWithControlBar" stateGroups="withControls" />
     <s:State name="disabledWithControlBar" stateGroups="withControls" />
     <s:State name="normalWithActionBar" stateGroups="withActions" />
@@ -24,7 +24,7 @@
   
   <fx:Metadata>
     <![CDATA[ 
-    [HostComponent("containers.ActionsTitleBarPanel")]
+    [HostComponent("myflexlib.containers.ActionsTitleBarPanel")]
     ]]>
   </fx:Metadata>
   
@@ -93,6 +93,24 @@
     ]]>
   </fx:Script>
   
+  <s:transitions>
+    <s:Transition fromState="*" toState="collapsedWithActions">
+      <s:Sequence>
+        <s:Parallel targets="{[contentGroup,this]}">
+          <s:Fade target="{contentGroup}" duration="250" />
+          <s:SetAction target="{this}" property="minHeight"/>                  
+        </s:Parallel>               
+      </s:Sequence>
+    </s:Transition>
+    <s:Transition fromState="contentCollapsed" toState="*">
+      <s:Sequence>               
+        <!--<s:Resize target="{this}" duration="250"/>-->        
+        <s:Fade target="{contentGroup}" duration="250" />
+        <s:SetAction target="{this}" property="minHeight" value="*"/>
+      </s:Sequence>
+    </s:Transition>
+  </s:transitions>
+  
   <!-- drop shadow can't be hittable so it stays sibling of other graphics -->
   <s:RectangularDropShadow id="dropShadow" blurX="20" blurY="20" alpha="0.32" distance="11" 
                            angle="90" color="#000000" left="0" top="0" right="0" bottom="0"/>
@@ -110,8 +128,7 @@
     </s:Group>
     
     <!-- bottom group mask -->
-    <s:Group left="1" top="1" right="1" bottom="1" id="bottomGroupMask" 
-             includeIn="normalWithControlBar, disabledWithControlBar">
+    <s:Group left="1" top="1" right="1" bottom="1" id="bottomGroupMask" includeIn="normalWithControlBar, disabledWithControlBar">
       <s:Rect id="bottomMaskRect" left="0" top="0" right="0" bottom="0">
         <s:fill>
           <s:SolidColor alpha="0"/>
@@ -186,11 +203,10 @@
             </s:layout>
           </s:Group>
         </s:Group>
-        </s:HGroup>
+         </s:HGroup>
       </s:Group>
       
-      <s:Group id="bottomGroup" minWidth="0" minHeight="0"
-               includeIn="withControls" >
+      <s:Group id="bottomGroup" minWidth="0" minHeight="0" includeIn="withControls">
         <s:Group left="0" right="0" top="0" bottom="0" mask="{bottomGroupMask}">
           <!-- layer 0: control bar divider line -->
           <s:Rect left="0" right="0" bottom="0" height="1" alpha="0.22">
@@ -234,7 +250,7 @@
       size will not be thwarted by this skin part's minimum size.   This is a compromise,
       more about it here: http://bugs.adobe.com/jira/browse/SDK-21143
       -->
-      <s:Group id="contentGroup" width="100%" height="100%" minWidth="0" minHeight="0" />
+      <s:Group id="contentGroup" width="100%" height="100%" minWidth="0" minHeight="0"/>
     </s:Group>
   </s:Group>
 </s:SparkSkin>

@@ -1,6 +1,17 @@
-@namespace my "containers.*";
+@namespace my "myflexlib.containers.*";
+@namespace s "library://ns.adobe.com/flex/spark";
 
 my|ActionsTitleBarPanel
 {  
-  skinClass: ClassReference("skins.containers.ActionsTitleBarPanelSkin");
+  skinClass: ClassReference("myflexlib.skins.containers.ActionsTitleBarPanelSkin");
 }
+
+my|TimeField
+{  
+  skinClass: ClassReference("myflexlib.skins.controls.TimeFieldSkin");
+}
+
+/*s|ToggleButton
+{
+  skinClass: ClassReference("skins.control.SlidingToggleButton");
+}*/

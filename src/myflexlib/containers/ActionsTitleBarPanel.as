@@ -1,13 +1,15 @@
-package containers
+package myflexlib.containers
 {
+  import flash.events.MouseEvent;
   import mx.core.mx_internal;
   import mx.utils.BitFlagUtil;
   
+  import spark.components.Button;
   import spark.components.Group;
   import spark.components.Panel;
   import spark.layouts.supportClasses.LayoutBase;
 
-  use namespace mx_internal;
+  use namespace mx_internal;    
   public class ActionsTitleBarPanel extends Panel
   {
     
@@ -22,6 +24,7 @@ package containers
      *  @private
      */
     mx_internal static const ACTIONBAR_PROPERTY_FLAG:uint = 1 << 0;
+    
     
     //--------------------------------------------------------------------------
     //
@@ -232,8 +235,9 @@ package containers
       if (skin)
         skin.invalidateSize();
     }
-
-    /**
+    
+    
+       /**
      *  @private
      */
     override protected function partAdded(partName:String, instance:Object):void
@@ -268,6 +272,7 @@ package containers
         
         actionBarGroupProperties = newActionBarGroupProperties;
       }
+      
     }
     
     /**
@@ -302,6 +307,7 @@ package containers
         actionBarGroup.mxmlContent = null;
         actionBarGroup.layout = null;
       }
+      
     }
     
     /**
@@ -313,9 +319,9 @@ package containers
      *  @productversion Flex 4
      */
     override protected function getCurrentSkinState():String
-    {
+    {      
+      var state:String =  super.getCurrentSkinState();            
       
-      var state:String = super.getCurrentSkinState();
       if (actionBarGroup)
       {
         if (BitFlagUtil.isSet(actionBarGroupProperties as uint, ACTIONBAR_PROPERTY_FLAG) &&

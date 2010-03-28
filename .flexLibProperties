@@ -5,7 +5,8 @@
     <classEntry path="myflexlib.controls.TimeField"/>
     <classEntry path="myflexlib.controls.TwoLabelsToggleButton"/>
     <classEntry path="myflexlib.skins.containers.ActionsTitleBarPanelSkin"/>
-    <classEntry path="myflexlib.skins.control.TimeFieldSkin"/>
+    <classEntry path="myflexlib.skins.controls.SlidingToggleButton"/>
+    <classEntry path="myflexlib.skins.controls.TimeFieldSkin"/>
   </includeClasses>
   <includeResources>
     <resourceEntry destPath="defaults.css" sourcePath="defaults.css"/>

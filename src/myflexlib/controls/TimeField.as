@@ -3,8 +3,9 @@ package myflexlib.controls
   import flash.events.Event;
   import mx.core.IDataRenderer;
   import mx.events.FlexEvent;
-  import mx.utils.ObjectUtil;
+  import mx.formatters.NumberFormatter;
   
+  import spark.components.Label;
   import spark.components.NumericStepper;
   import spark.components.supportClasses.SkinnableComponent;
   
@@ -41,18 +42,19 @@ package myflexlib.controls
   {
     public function TimeField()
     {
-      super();
+      super();      
     }
     
     //----------------------------------
     //  data
     //----------------------------------
     
+    private var dataChanged:Boolean;
     /**
      *  @private
      *  Storage for the data property
      */
-    private var _data:Object;
+    private var _data:Object;    
     
     [Bindable("dataChange")]
     [Inspectable(environment="none")]
@@ -86,19 +88,19 @@ package myflexlib.controls
     public function set data(value:Object):void
     {    
       var newDate:Date;
+      if(value == null){
+        newDate = new Date();
+      }
       if (value is String)
         newDate = new Date(Date.parse(value as String));
       else if (value is Date)
-        newDate = value as Date;
-      
-      if (ObjectUtil.dateCompare(_data as Date, newDate) == 0) 
-        return;
+        newDate = value as Date;   
       
       _data = newDate;
-                 
+      dataChanged = true;
+      invalidateProperties();                       
       dispatchEvent(new FlexEvent(FlexEvent.DATA_CHANGE));
     }
-    
     
     //----------------------------------
     //  hour
@@ -120,9 +122,7 @@ package myflexlib.controls
     private function set hour(value:Number):void{
       if(_hour == value)
         return
-      _hour = value;
-      hourChanged = true;
-      invalidateProperties();
+      _hour = value;      
     }
     
     //----------------------------------
@@ -146,15 +146,145 @@ package myflexlib.controls
       if(_minute == value)
         return
       _minute = value;
-      minuteChanged = true;
+    }
+    
+    //----------------------------------
+    //  separatorText
+    //----------------------------------
+    /**
+     *  @private
+     */
+    public var separatorTextChanged:Boolean = false;
+    /**
+     * @private
+     *  storage for the separatorText property 
+     */ 
+    private var _separatorText:String= "h";
+    
+    public function get separatorText():String{
+      return _separatorText;
+    }
+    
+    public function set separatorText(value:String):void{
+      if(_separatorText == value)
+        return
+        _separatorText = value;
+      separatorTextChanged = true;
       invalidateProperties();
+    }
+    
+    //----------------------------------
+    //  minimumHour
+    //----------------------------------
+    /**
+     *  @private
+     * minimumHour : step to use for the minutes
+     */
+    private var minimumHourChanged:Boolean = false;
+    /**
+     * @private
+     *  storage for the minimumHour property 
+     */ 
+    private var _minimumHour:Number= 0;
+    
+    
+    /**
+     * MinutesSteps defines the step to use in the minuteStepper field
+     * @default = 1
+     */  
+    public function get minimumHour():Number{
+      return _minimumHour;
+    }
+    
+    public function set minimumHour(value:Number):void{
+      if(_minimumHour == value)
+        return
+        _minimumHour = value;
+      minimumHourChanged = true;
+      invalidateProperties();      
+    }
+    
+    //----------------------------------
+    //  maximumHour
+    //----------------------------------
+    /**
+     *  @private
+     * maximumHour : step to use for the minutes
+     */
+    private var maximumHourChanged:Boolean = false;
+    /**
+     * @private
+     *  storage for the maximumHour property 
+     */ 
+    private var _maximumHour:Number= 23;
+    
+    
+    /**
+     * MinutesSteps defines the step to use in the minuteStepper field
+     * @default = 1
+     */  
+    public function get maximumHour():Number{
+      return _maximumHour;
+    }
+    
+    public function set maximumHour(value:Number):void{
+      if(_maximumHour == value)
+        return
+        _maximumHour = value;
+      maximumHourChanged = true;
+      invalidateProperties();      
+    }
+    
+    //----------------------------------
+    //  minutesStep
+    //----------------------------------
+    /**
+     *  @private
+     * minutesStepSize : step to use for the minutes
+     */
+    private var minutesStepSizeChanged:Boolean = false;
+    /**
+     * @private
+     *  storage for the minutesStepSize property 
+     */ 
+    private var _minutesStepSize:Number= 1;
+    
+    
+    /**
+     * MinutesSteps defines the step to use in the minuteStepper field
+     * @default = 1
+     */  
+    public function get minutesStepSize():Number{
+      return _minutesStepSize;
+    }
+    
+    public function set minutesStepSize(value:Number):void{
+      if(_minutesStepSize == value)
+        return
+      _minutesStepSize = value;
+      minutesStepSizeChanged = true;
+      invalidateProperties();      
+    }
+    
+    /**
+     * default value Format function used to format number
+     * numbers are formated with 2 char 0 => 00, 9=> 09
+     */  
+    private function hourMinutesFormatFunction(value:Number):String{
+      var ret:String = "";
+      if(isNaN(value))
+        return ret      
+      if(value < 10){
+        ret +="0";
+      }
+      return ret+value.toString();
     }
     
     //----------------------------------
     //  hourStepper
     //---------------------------------- 
     
-    [SkinPart(required="false")]
+    [SkinPart(required="true")]
     
     /**
      *  The skin part that defines the appearance of the 
@@ -175,7 +305,7 @@ package myflexlib.controls
     //  minuteStepper
     //---------------------------------- 
     
-    [SkinPart(required="false")]
+    [SkinPart(required="true")]
     
     /**
      *  The skin part that defines the appearance of the 
@@ -192,6 +322,45 @@ package myflexlib.controls
      */
     public var minuteStepper:NumericStepper;
     
+    //----------------------------------
+    //  separator
+    //---------------------------------- 
+    
+    [SkinPart(required="false")]
+    
+    /**
+     *  The skin part that defines the appearance of the 
+     *  action bar area of the container.
+     *  By default, the ActionsTileBarPanelSkin class defines the action bar area to appear on the  
+     *  left of the title of the Panel container with a grey background. 
+     *
+     *  @see skins.containers.ActionsTitleBarPanelSkin
+     *  
+     *  @langversion 3.0
+     *  @playerversion Flash 10
+     *  @playerversion AIR 1.5
+     *  @productversion Flex 4
+     */
+    public var separator:Label;
+    
+    
+    /**
+     * Returns the maximum of the minuteStepper depending on
+     * the stepSize selected
+     * if stepSize = 1, maximum = 59
+     * if stepSize = 15, maximum = 45
+     * ...
+     */  
+    private function computeMinuteMaximum(stepSize:Number):Number{
+      var maximum:Number = 0;
+      if(stepSize > 0){
+        // nbrTime stepSize in 60
+        var nbrTimes:Number = Math.floor(60/stepSize);
+        maximum = Math.max(0,(nbrTimes - 1)) * stepSize;        
+      }      
+      
+      return maximum;
+    }
     
     /**
      *  @private
@@ -201,21 +370,29 @@ package myflexlib.controls
       super.partAdded(partName, instance);
       
       if(instance == hourStepper){
-        hourStepper.minimum = 0;
-        hourStepper.maximum = 23;
-        hourStepper.stepSize = 1;
-        
-        hourStepper.addEventListener(Event.CHANGE,hourStepper_changeHandler);        
+        hourStepper.minimum = minimumHour;
+        hourStepper.maximum = maximumHour;
+        hourStepper.stepSize = 1;        
+        hourStepper.value = hour;
+        hourStepper.maxChars = 2;
+        hourStepper.allowValueWrap=true;
+        hourStepper.valueFormatFunction = hourMinutesFormatFunction;
+        hourStepper.addEventListener(Event.CHANGE,hourStepper_changeHandler);          
       }
       
       if(instance == minuteStepper){
-        minuteStepper.minimum = 0;
-        minuteStepper.maximum = 59;
-        minuteStepper.stepSize = 1;        
-        
+        minuteStepper.minimum = 0;        
+        minuteStepper.stepSize = minutesStepSize;
+        minuteStepper.maximum = computeMinuteMaximum(minutesStepSize);
+        minuteStepper.value = minute;
+        minuteStepper.maxChars = 2;
+        minuteStepper.allowValueWrap=true;
+        minuteStepper.valueFormatFunction = hourMinutesFormatFunction;
         minuteStepper.addEventListener(Event.CHANGE,minuteStepper_changeHandler);        
       }
       
+      if(instance == separator)
+        separator.text = separatorText;      
     }
     
     /**
@@ -247,17 +424,51 @@ package myflexlib.controls
       return enabled ? "normal" : "disabled";
     }
     
+    
+    //----------------------------------
+    //  baselinePosition
+    //----------------------------------
+    
+    /**
+     *  @private
+     */
+    override public function get baselinePosition():Number
+    {
+      return getBaselinePositionForPart(hourStepper);
+    }
+    
     /**
      *  @private
      */
     override protected function commitProperties():void
     {   
       super.commitProperties();
-      if(hourChanged){
-        hourStepper.value = hour;
+      
+      if(minimumHourChanged){
+        hourStepper.minimum = minimumHour;        
+        minimumHourChanged = false;
       }
-      if(minuteChanged){
-        minuteStepper.value = minute;
+      
+      if(maximumHourChanged){
+        hourStepper.maximum = maximumHour;        
+        maximumHourChanged = false;
+      }
+      
+      if(minutesStepSizeChanged){
+        minuteStepper.stepSize = minutesStepSize;
+        minuteStepper.maximum = computeMinuteMaximum(minutesStepSize);
+        minutesStepSizeChanged = false;
+      }
+      if(separatorTextChanged){
+        separator.text = separatorText;
+        separatorTextChanged = false;
+      }
+      if(dataChanged){
+        hour = data.hours
+        minute = data.minutes;  
+        hourStepper.value = data.hours;
+        minuteStepper.value = data.minutes;
+        dataChanged = false;
       }
     }
     
@@ -296,15 +507,14 @@ package myflexlib.controls
      * Update the data property with the selected hour and minutes
      */  
     protected function commitTime():void{
-      var newDate:Date;
-      if(data == null)
-        newDate = new Date();
-      else
-        newDate = data.clone();
-      
-      newDate.hours = hour;
-      newDate.minutes = minute;
-      data = newDate;
+      if(data == null){
+        data = new Date();
+        data.seconds = 0;
+      }
+      data.hours = hour;
+      data.minutes = minute;      
+      dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
+      dispatchEvent(new FlexEvent(FlexEvent.DATA_CHANGE));     
     }
   }
 }

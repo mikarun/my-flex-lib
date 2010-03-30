@@ -3,7 +3,7 @@ package myflexlib.controls
   import flash.events.Event;
   import mx.core.IDataRenderer;
   import mx.events.FlexEvent;
-  import mx.formatters.NumberFormatter;
+  import mx.utils.StringUtil;
   
   import spark.components.Label;
   import spark.components.NumericStepper;
@@ -149,6 +149,29 @@ package myflexlib.controls
     }
     
     //----------------------------------
+    //  hourOffset
+    //----------------------------------
+    /**
+     *  @private
+     */
+    private var hourOffsetChanged:Boolean = false;
+    /**
+     * @private
+     *  storage for the hourOffset property 
+     */ 
+    private var _hourOffset:Number= 0;
+    
+    public function get hourOffset():Number{
+      return _hourOffset;
+    }
+    
+    public function set hourOffset(value:Number):void{
+      if(_hourOffset == value)
+        return
+        _hourOffset = value;      
+    }
+    
+    //----------------------------------
     //  separatorText
     //----------------------------------
     /**
@@ -266,18 +289,53 @@ package myflexlib.controls
       invalidateProperties();      
     }
     
+    
     /**
      * default value Format function used to format number
      * numbers are formated with 2 char 0 => 00, 9=> 09
      */  
-    private function hourMinutesFormatFunction(value:Number):String{
-      var ret:String = "";
+    private function minutesFormatFunction(value:Number):String{
+      var ret:String = "";      
       if(isNaN(value))
-        return ret      
+        return ret               
       if(value < 10){
         ret +="0";
       }
       return ret+value.toString();
+    }
+    
+    /**
+     * default value Format function used to format number
+     * numbers are formated with 2 char 0 => 00, 9=> 09
+     */  
+    private function hourFormatFunction(value:Number):String{
+      var ret:String = "";      
+      if(isNaN(value))
+        return ret    
+      var localVal:Number = (hourOffset + value)%24;      
+      if(localVal < 10){
+        ret +="0";
+      }
+      return ret+localVal.toString();
+    }
+    
+    /**
+     * Hour parsed function used to managed hourOffset
+     */  
+    private function hourParseFunction(value:String):Number{
+      var ret:Number = minimumHour;      
+      if(StringUtil.trim(value).length == 0)
+        return ret    
+      var localVal:Number = new Number(value);
+      
+      if(isNaN(localVal))
+        return ret;
+      //sepecific case where localVal = 0 (midnight) and offset = 12
+      if(localVal < hourOffset)
+        ret = localVal + hourOffset;
+      else
+        ret = localVal - hourOffset;      
+      return ret;
     }
     
     //----------------------------------
@@ -376,7 +434,8 @@ package myflexlib.controls
         hourStepper.value = hour;
         hourStepper.maxChars = 2;
         hourStepper.allowValueWrap=true;
-        hourStepper.valueFormatFunction = hourMinutesFormatFunction;
+        hourStepper.valueFormatFunction = hourFormatFunction;
+        hourStepper.valueParseFunction = hourParseFunction;
         hourStepper.addEventListener(Event.CHANGE,hourStepper_changeHandler);          
       }
       
@@ -387,7 +446,7 @@ package myflexlib.controls
         minuteStepper.value = minute;
         minuteStepper.maxChars = 2;
         minuteStepper.allowValueWrap=true;
-        minuteStepper.valueFormatFunction = hourMinutesFormatFunction;
+        minuteStepper.valueFormatFunction = minutesFormatFunction;
         minuteStepper.addEventListener(Event.CHANGE,minuteStepper_changeHandler);        
       }
       
@@ -463,12 +522,13 @@ package myflexlib.controls
         separator.text = separatorText;
         separatorTextChanged = false;
       }
-      if(dataChanged){
-        hour = data.hours
+      if(dataChanged || hourOffsetChanged){
+        hour = data.hours - hourOffset
         minute = data.minutes;  
-        hourStepper.value = data.hours;
+        hourStepper.value = data.hours - hourOffset;
         minuteStepper.value = data.minutes;
         dataChanged = false;
+        hourOffsetChanged = false;
       }
     }
     
@@ -511,7 +571,7 @@ package myflexlib.controls
         data = new Date();
         data.seconds = 0;
       }
-      data.hours = hour;
+      data.hours = (hour + hourOffset )%24;
       data.minutes = minute;      
       dispatchEvent(new FlexEvent(FlexEvent.VALUE_COMMIT));
       dispatchEvent(new FlexEvent(FlexEvent.DATA_CHANGE));     

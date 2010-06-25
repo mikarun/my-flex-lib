@@ -7,6 +7,14 @@
     <classEntry path="myflexlib.skins.containers.ActionsTitleBarPanelSkin"/>
     <classEntry path="myflexlib.skins.controls.SlidingToggleButton"/>
     <classEntry path="myflexlib.skins.controls.TimeFieldSkin"/>
+    <classEntry path="myflexlib.controls.grid.ComboBoxHeaderADGColumn"/>
+    <classEntry path="myflexlib.renderers.grid.ComboBoxADGHeaderRenderer"/>
+    <classEntry path="myflexlib.controls.grid.selectablecolumn.CheckboxHeaderRenderer"/>
+    <classEntry path="myflexlib.controls.grid.selectablecolumn.IGridHostControl"/>
+    <classEntry path="myflexlib.controls.grid.selectablecolumn.CheckboxAdvancedDataGridColumn"/>
+    <classEntry path="myflexlib.controls.grid.selectablecolumn.CheckBoxAdvancedDataGridItemRenderer"/>
+    <classEntry path="myflexlib.controls.grid.selectablecolumn.ItemCheckEvent"/>
+    <classEntry path="myflexlib.controls.grid.selectablecolumn.PreventSelectionOnColumnClickGrid"/>
   </includeClasses>
   <includeResources>
     <resourceEntry destPath="defaults.css" sourcePath="defaults.css"/>

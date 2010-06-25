@@ -9,7 +9,9 @@
              blendMode="normal"
              mouseEnabled="false"              
              alpha.disabled="0.5"
-             alpha.disabledWithControlBar="0.5">
+             alpha.disabledWithControlBar="0.5"
+             alpha.disabledWithActionBar="0.5"
+             alpha.disabledWithControlBarWithActionBar="0.5">
   <!-- states -->
   <s:states>
     <s:State name="normal" />

@@ -1,6 +1,7 @@
 package myflexlib.controls
 {
   import flash.events.Event;
+  
   import mx.core.IDataRenderer;
   import mx.events.FlexEvent;
   import mx.utils.StringUtil;
@@ -93,13 +94,14 @@ package myflexlib.controls
       }
       if (value is String)
         newDate = new Date(Date.parse(value as String));
-      else if (value is Date)
-        newDate = value as Date;   
+      else if (value is Date){
+        newDate = new Date(value as Date);
+      }
       
       _data = newDate;
       dataChanged = true;
       invalidateProperties();                       
-      dispatchEvent(new FlexEvent(FlexEvent.DATA_CHANGE));
+      //dispatchEvent(new FlexEvent(FlexEvent.DATA_CHANGE));
     }
     
     //----------------------------------

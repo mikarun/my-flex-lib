@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:MXAdvancedDataGridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+                          xmlns:s="library://ns.adobe.com/flex/spark" 
+                          xmlns:mx="library://ns.adobe.com/flex/mx">
+  <fx:Declarations>
+    <!-- Place non-visual elements (e.g., services, value objects) here -->
+  </fx:Declarations>
+  <fx:Script>
+    <![CDATA[
+      
+      import myflexlib.controls.grid.selectablecolumn.ItemCheckEvent;   
+      
+      protected function checkbox_changeHandler(event:Event):void
+      {
+        if(data != null){            
+            var event:Event = new ItemCheckEvent(true);
+            (event as ItemCheckEvent).selected = selectedCB.selected;
+            (event as ItemCheckEvent).item = data;   
+            this.parentDocument.dispatchEvent(event);
+        }                      
+      } 
+    ]]>
+  </fx:Script>
+  <s:HGroup verticalAlign="middle" paddingLeft="{(this.parentDocument as IGridHostControl).leftPadding_CheckboxHeaderColumn}" horizontalAlign="left" width="100%">
+    <s:CheckBox   label="" id="selectedCB" change="checkbox_changeHandler(event)"/>  
+  </s:HGroup>                
+</s:MXAdvancedDataGridItemRenderer>
